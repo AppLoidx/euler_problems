@@ -11,11 +11,18 @@
   ([key value]
    (make-node nil nil key value)))
 
+(defn nodekey-wrapper
+  [node]
+  (if (instance? Number (:key node))
+    (:key node)
+    (hash (:key node)))
+  )
+
 (defn comparator-over-nodes
-  "Returns a comparison function specific for values of tree nodes"
+  "возвращает функцию компаратор между нодами"
   ([func]
    (fn [node1 node2]
-     (func (:key node1) (:key node2))))
+     (func (nodekey-wrapper node1) (nodekey-wrapper node2))))
   ([func & args]
    (comparator-over-nodes #(func args %))))
 
@@ -212,27 +219,65 @@
      )))
 
 
-(deftest non-existing-value
+(deftest get-non-existing-value-test
   (is
    (=
     nil
     (value-from-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 0)
     )))
 
+(deftest simple-height-test
+  (is
+   (=
+    2
+    (height (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}))
+    )))
+
+(deftest bidirectional-tree-height-test
+  (is
+   (=
+    2
+    (height (add-to-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) {:key 1000 :value 1000}))
+    )))
+
+(deftest bidirectional-tree-height-3-test
+  (is
+   (=
+    3
+    (height (add-to-dict
+             (add-to-dict
+              (add-to-dict
+               (create-dict {:key 666 :value 100})
+               {:key 111 :value 1500})
+              {:key 1000 :value 1000})
+             {:key 2000 :value -1}))
+    )))
+
+(deftest pass-string-as-key
+  (is
+   (
+     =
+     {:left {:left nil, :right nil, :key "Another String", :value -100}, :right nil, :key "he he, I am string!", :value 100}
+     (add-to-dict (create-dict {:key "he he, I am string!" :value 100}) {:key "Another String" :value -100})
+
+     )))
+
+; is-like tests
 (create-dict-test)
-
 (create-nil-dict-test)
-
 (add-to-nil-test)
-
 (add-to-dict-test)
-
 (add-nil-to-dict-test)
-
 (add-existing-value-test)
-
 (get-value-test)
+(get-non-existing-value-test)
+(simple-height-test)
+(bidirectional-tree-height-test)
+(bidirectional-tree-height-3-test)
 
-(non-existing-value)
+
+; strange tests
+
+(pass-string-as-key)
 
 
