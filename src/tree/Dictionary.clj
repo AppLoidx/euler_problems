@@ -1,7 +1,7 @@
-(ns tree.Dictionary)
+(ns tree.Dictionary
+  (:require [clojure.test :refer [deftest is]]))
 
-(use
- 'clojure.test)
+
 
 ;left - less, right - greater
 
@@ -15,8 +15,7 @@
   [node]
   (if (instance? Number (:key node))
     (:key node)
-    (hash (:key node)))
-  )
+    (hash (:key node))))
 
 (defn comparator-over-nodes
   "возвращает функцию компаратор между нодами"
@@ -108,19 +107,6 @@
   (remove-child
    (find-node-parent root remove-key)))
 
-(defn greatest
-  [root]
-  (if (:right root)
-    (greatest (:right root))
-    root))
-
-(def my-tree
-  (assoc
-   (assoc
-    (assoc (make-node 10 666)
-           :left (make-node 8 666))
-    :right (make-node 11 666))
-   :left (make-node 4 666)))
 
 (defn add-to-dict
   ([dict entry]
@@ -141,20 +127,15 @@
   (apply add-to-dict args))
 
 
-(defn -main
-  [& args]
+;; (defn main
+;;   []
 
-  (println
-   (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}))
-  (println
-   (remove-node
-    (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 666)))
+;;   (println
+;;    (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}))
+;;   (println
+;;    (remove-node
+;;     (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 666)))
 
-
-(def my-tree
-  (assoc
-   (make-node 666 100)
-   :left (make-node 111 1600)))
 
 
 ;(-main)
@@ -178,24 +159,24 @@
   (is
    (=
     {:left
-     {:left nil, :right nil,
-      :key  111, :value 1500},
-     :right nil,
-     :key   666,
+     {:left nil, :right nil
+      :key  111, :value 1500}
+     :right nil
+     :key   666
      :value 100}
     (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}))))
 
 (deftest add-to-nil-test
   (is
    (=
-    {:left nil, :right nil,
+    {:left nil, :right nil
      :key  666, :value 100}
     (add-to-dict nil {:key 666 :value 100}))))
 
 (deftest add-nil-to-dict-test
   (is
    (=
-    {:left nil, :right nil,
+    {:left nil, :right nil
      :key  555, :value 0}
     (add-to-dict (create-dict {:key 555 :value 0}) nil))))
 
@@ -203,42 +184,37 @@
   (is
    (=
     {:left
-     {:left nil, :right nil,
-      :key  111, :value 1500},
-     :right nil,
-     :key   666,
+     {:left nil, :right nil
+      :key  111, :value 1500}
+     :right nil
+     :key   666
      :value -20}
-    (add-to-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) {:key 666 :value -20})
-     )))
+    (add-to-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) {:key 666 :value -20}))))
 
 (deftest get-value-test
   (is
    (=
     1500
-    (value-from-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 111)
-     )))
+    (value-from-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 111))))
 
 
 (deftest get-non-existing-value-test
   (is
    (=
     nil
-    (value-from-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 0)
-    )))
+    (value-from-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 0))))
 
 (deftest simple-height-test
   (is
    (=
     2
-    (height (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}))
-    )))
+    (height (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500})))))
 
 (deftest bidirectional-tree-height-test
   (is
    (=
     2
-    (height (add-to-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) {:key 1000 :value 1000}))
-    )))
+    (height (add-to-dict (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) {:key 1000 :value 1000})))))
 
 (deftest bidirectional-tree-height-3-test
   (is
@@ -250,17 +226,13 @@
                (create-dict {:key 666 :value 100})
                {:key 111 :value 1500})
               {:key 1000 :value 1000})
-             {:key 2000 :value -1}))
-    )))
+             {:key 2000 :value -1})))))
 
 (deftest pass-string-as-key
   (is
-   (
-     =
-     {:left {:left nil, :right nil, :key "Another String", :value -100}, :right nil, :key "he he, I am string!", :value 100}
-     (add-to-dict (create-dict {:key "he he, I am string!" :value 100}) {:key "Another String" :value -100})
-
-     )))
+   (=
+    {:left {:left nil, :right nil, :key "Another String", :value -100}, :right nil, :key "he he, I am string!", :value 100}
+    (add-to-dict (create-dict {:key "he he, I am string!" :value 100}) {:key "Another String" :value -100}))))
 
 ; is-like tests
 (create-dict-test)
