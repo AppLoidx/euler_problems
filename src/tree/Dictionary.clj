@@ -1,8 +1,6 @@
 (ns tree.Dictionary)
 
-
-
-;left - less, right - greater
+; left - less, right - greater
 
 (defn make-node
   ([left right key value]
@@ -15,6 +13,10 @@
   (if (instance? Number (:key node))
     (:key node)
     (hash (:key node))))
+
+(defn key-wrapper
+  [key]
+  (if (instance? Number key) key (hash key)))
 
 (defn comparator-over-nodes
   "возвращает функцию компаратор между нодами"
@@ -75,9 +77,9 @@
   ([root key parent]
    (if (nil? (:key root))
      nil
-     (if (= key (:key root))
+     (if (= (key-wrapper key) (nodekey-wrapper root))
        {:parent parent :child root}
-       (if (> key (:key root))
+       (if (> (key-wrapper key) (nodekey-wrapper root))
          (find-node-parent (:right root) key root)
          (find-node-parent (:left root) key root)))))
   ([root key]
@@ -89,7 +91,7 @@
     left-node
     (assoc (find-smallest-node root) :left left-node)))
 
-(defn remove-child
+(defn remove-node-from-tree
   [e]
   ; {:parent parent :child root} object
   (if (nil? (:parent e))
@@ -103,18 +105,29 @@
 
 (defn remove-node
   [root remove-key]
-  (remove-child
+  (remove-node-from-tree
    (find-node-parent root remove-key)))
 
 
-(defn add-to-dict
-  ([dict entry]
-   (if (nil? entry)
-     dict
-     (insert-node dict (make-node (:key entry) (:value entry)))))
+;; (defn add-to-dict-v1
+;;   ([dict entry]
+;;    (if (nil? entry)
+;;      dict
+;;      (insert-node dict (make-node (:key entry) (:value entry)))))
 
-  ([entry]
-   (insert-node nil (make-node (:key entry) (:value entry)))))
+  ;; ([entry]
+  ;;  (insert-node nil (make-node (:key entry) (:value entry)))))
+
+(defn entry-node
+  [dict entry]
+  (insert-node dict {:key (key entry) :value (val entry)}))
+
+(defn add-to-dict
+  ([dict inits]
+   (reduce entry-node dict inits))
+
+  ([inits]
+   (reduce entry-node nil inits)))
 
 (defn value-from-dict
   [dict key]
@@ -126,14 +139,21 @@
   (apply add-to-dict args))
 
 
+;; (defn plus
+;;   [dict1 dict2]
+;;   ())
+
+
 (defn main
   []
-
-  (println
-   (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}))
+  ;; (println
+  ;;  (add-to-dict (create-dict {:goodnum 666 :another 100}) {:my 111 :not-my 1500}))
+  ;; (println
+  ;;  (add-to-dict (create-dict {:badnum 666 :coolnum 100}) {:notmyval 111 :sheeez 1500}))
   (println
    (remove-node
-    (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}) 666)))
+    (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111 :key6 1500}) :key1)))
+
 
 
 

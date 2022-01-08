@@ -1,4 +1,4 @@
-(ns tree.dic-test
+(ns tree.dic_test
   (:require [clojure.test :refer [deftest is]]
             [tree.Dictionary :refer :all]))
 
@@ -25,7 +25,7 @@
      :value 100}
     (add-to-dict (create-dict {:key 666 :value 100}) {:key 111 :value 1500}))))
 
-(deftest add-to-nil-test
+(deftest add-to-nil_test
   (is
    (=
     {:left nil, :right nil
@@ -92,21 +92,3 @@
    (=
     {:left {:left nil, :right nil, :key "Another String", :value -100}, :right nil, :key "he he, I am string!", :value 100}
     (add-to-dict (create-dict {:key "he he, I am string!" :value 100}) {:key "Another String" :value -100}))))
-
-; is-like tests
-(create-dict-test)
-(create-nil-dict-test)
-(add-to-nil-test)
-(add-to-dict-test)
-(add-nil-to-dict-test)
-(add-existing-value-test)
-(get-value-test)
-(get-non-existing-value-test)
-(simple-height-test)
-(bidirectional-tree-height-test)
-(bidirectional-tree-height-3-test)
-
-
-; strange tests
-
-(pass-string-as-key)
