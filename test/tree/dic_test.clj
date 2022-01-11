@@ -62,6 +62,7 @@
     2
     (height (add-to-dict (add-to-dict (create-dict {:666 100}) {:111 1500}) {:1000 1000})))))
 
+
 (deftest bidirectional-tree-height-3-test
   (is
    (=
@@ -74,3 +75,10 @@
               {:1000 1000})
              {:2000 -1})))))
 
+ (deftest varargs-check  
+  (is
+   (=
+    {:key :baba, :value "val1", :left {:key :boba, :value "val2", :left nil, :right {:key :git, :value "hub", :left nil, :right nil}}, :right nil}
+    (add-to-dict nil {:baba "val1"} {:boba "val2"} {:git "hub"})))
+
+)

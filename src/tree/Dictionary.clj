@@ -49,7 +49,7 @@
     new-node
     (if (right-than new-node root)
       (assoc root :right (insert-node (:right root) new-node))
-
+      ;; (println root)
       (if (equals new-node root)
         (assoc root :value (:value new-node))
         (assoc root :left (insert-node (:left root) new-node))))))
@@ -77,11 +77,16 @@
   ([root key parent]
    (if (nil? (:key root))
      nil
-     (if (= (key-wrapper key) (nodekey-wrapper root))
-       {:parent parent :child root}
-       (if (> (key-wrapper key) (nodekey-wrapper root))
-         (find-node-parent (:right root) key root)
-         (find-node-parent (:left root) key root)))))
+    ;;  (if (= (key-wrapper key) (nodekey-wrapper root))
+    ;;    {:parent parent :child root}
+    ;;    (if (> (key-wrapper key) (nodekey-wrapper root))
+    ;;      (find-node-parent (:right root) key root)
+    ;;      (find-node-parent (:left root) key root)))
+     (let [target (key-wrapper key) node (nodekey-wrapper root)]
+       (cond
+         (= target node) {:parent parent :child root}
+         (> target node) (find-node-parent (:right root) key root)
+         :else (find-node-parent (:left root) key root)))))
   ([root key]
    (find-node-parent root key nil)))
 
@@ -104,9 +109,11 @@
 
 
 (defn remove-node
-  [root remove-key]
-  (remove-node-from-tree
-   (find-node-parent root remove-key)))
+  ([root key]
+   (remove-node-from-tree
+    (find-node-parent root key)))
+  ([root key & keys]
+   (reduce remove-node (remove-node root key) keys)))
 
 
 ;; (defn add-to-dict-v1
@@ -119,18 +126,28 @@
   ;;  (insert-node nil (make-node (:key entry) (:value entry)))))
 
 (defn entry-node
-  [dict entry]
+  ([dict entry]
 
-  (if (nil? entry)
-    (dict)
-    (insert-node dict {:key (key entry) :value (val entry) :left nil :right nil})))
+   (if (nil? entry)
+     dict
+     (if (map-entry? dict)
+      ;;  (prn dict)
+       (insert-node {:key (key dict) :value (val dict) :left nil :right nil} {:key (key entry) :value (val entry) :left nil :right nil})
+       (insert-node dict {:key (key entry) :value (val entry) :left nil :right nil})
+      ;;  (prn dict)
+       )))
+  ([entry]
+   (entry-node nil entry)))
+
 
 (defn add-to-dict
+  ([dict init & inits_var]
+   (reduce add-to-dict dict (merge inits_var init)))
+
   ([dict inits]
    (reduce entry-node dict inits))
-
   ([inits]
-   (reduce entry-node nil inits)))
+   (reduce entry-node inits)))
 
 (defn value-from-dict
   [dict key]
@@ -138,24 +155,56 @@
 
 
 (defn create-dict
-  [& args]
-  (apply add-to-dict args))
+  ([& args]
+   (reduce add-to-dict nil (merge args))))
 
+(defn dvalues
+  ([root seq]
 
-;; (defn plus
-;;   [dict1 dict2]
-;;   ())
+   (if (nil? (:left root))
 
+     (if (nil? (:right root))
+       (concat seq (sequence [(array-map (keyword (:key root)) (:value root))]))
+       (dvalues (:right root) (concat seq (sequence [(array-map (keyword (:key root)) (:value root))]))))
+     (dvalues (:left root) (concat seq (sequence [(array-map (keyword (:key root)) (:value root))])))))
+  ([root]
+   (dvalues root (sequence []))))
+
+(defn dfilter
+
+  ([f root]
+   (filter f (dvalues root))))
+
+(defn demon-val?
+  ([entry]
+   (= 666 (val (first entry)))))
+
+(defn dmap
+  ([f root]
+   (map f (dvalues root))))
 
 (defn main
   []
   ;; (println
-  ;;  (add-to-dict (create-dict {:goodnum 666 :another 100}) {:my 111 :not-my 1500}))
+  ;; ;;  (add-to-dict (create-dict {:goodnum 666 :another 100}) {:my 111 :not-my 1500}))
   ;; (println
   ;;  (add-to-dict (create-dict {:badnum 666 :coolnum 100}) {:notmyval 111 :sheeez 1500}))
-  (println
-   (remove-node
-    (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111 :key6 1500}) :key1)))
+  ;; (println (create-dict {:key1 666 :key2 100}))
+
+  ;; (prn (create-dict {:key1 666, :key2 100}))
+  ;; (prn (create-dict {:key1 666, :key2 100} {:key4 12 :key5 13}))
+
+  ;; (println
+
+  (prn (dfilter demon-val?
+                (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
+  
+    (prn (dmap #(+ 10 (val (first %)))
+          (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
+
+
+  )
+
 
 
 
