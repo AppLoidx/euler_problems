@@ -59,9 +59,9 @@
   [root key]
   (if (nil? (:key root))
     nil
-    (if (= key (:key root))
+    (if (= (key-wrapper key) (nodekey-wrapper root))
       root
-      (if (> key (:key root))
+      (if (> (key-wrapper key) (nodekey-wrapper root))
         (find-node (:right root) key)
         (find-node (:left root) key)))))
 
@@ -120,7 +120,10 @@
 
 (defn entry-node
   [dict entry]
-  (insert-node dict {:key (key entry) :value (val entry)}))
+
+  (if (nil? entry)
+    (dict)
+    (insert-node dict {:key (key entry) :value (val entry) :left nil :right nil})))
 
 (defn add-to-dict
   ([dict inits]
