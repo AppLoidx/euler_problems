@@ -42,6 +42,14 @@
   ([root]
    (height root 0)))
 
+
+(defn operat
+  [obj]
+    (cond (instance? Number obj) +
+          :else concat)
+    
+)
+
 (defn insert-node
   "inserts a node into a BST"
   [root new-node]
@@ -51,7 +59,8 @@
       (assoc root :right (insert-node (:right root) new-node))
       ;; (println root)
       (if (equals new-node root)
-        (assoc root :value (:value new-node))
+        (assoc root :value ((operat (:value new-node)) 
+                            (:value new-node) (:value root)))
         (assoc root :left (insert-node (:left root) new-node))))))
 
 (defn find-node
@@ -183,6 +192,22 @@
   ([f root]
    (map f (dvalues root))))
 
+(defn ttt
+  [acc entry]
+  (entry-node acc entry))
+
+;; (defn merger
+;;   [me1 me2]
+;;   (if (nil? (find me1 (key me2)))
+;;     (+ me1 me2)
+;;     (+ me1 (assoc :value me2  3))
+;;     ))
+
+(defn dmerge
+  ([dict1 dict2]
+   (reduce ttt nil (merge-with + (map first (concat (dvalues dict1) (dvalues dict2)))))
+   ))
+
 (defn main
   []
   ;; (println
@@ -196,14 +221,13 @@
 
   ;; (println
 
-  (prn (dfilter demon-val?
-                (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
-  
-    (prn (dmap #(+ 10 (val (first %)))
-          (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
+  ;; (prn (dfilter demon-val?
+  ;;               (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
 
+  ;; (prn (dmap #(+ 10 (val (first %)))
+  ;;            (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
 
-  )
+  (prn (dmerge (create-dict {:k1 {:shit 1 :shit2 2} :k2 3333}) (create-dict {:k2 3 :k1 {:v 3 :b 6}}))))
 
 
 
