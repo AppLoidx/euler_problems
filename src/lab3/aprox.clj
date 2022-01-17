@@ -171,11 +171,11 @@
 
 ;; (main)
 
-(println (macroexpand-1
-          '(with-open [reader (io/reader *in*)]
-             (line-seq reader))))
+;; (println (macroexpand-1
+;;           '(with-open [reader (io/reader *in*)]
+;;              (line-seq reader))))
 
-(clojure.core/let [reader (io/reader *in*)] 
-          (try (clojure.core/with-open [] 
-              (line-seq reader)) 
-          (finally (. reader clojure.core/close))))
+;; (clojure.core/let [reader (io/reader *in*)] 
+;;           (try (clojure.core/with-open [] 
+;;               (line-seq reader)) 
+;;           (finally (. reader clojure.core/close))))

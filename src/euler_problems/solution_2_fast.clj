@@ -5,6 +5,6 @@
                                          (map #(Math/pow % 5) (range 10))))
         max  (-> \9 pow5 (* 6))]
     (reduce + (filter #(= % (reduce + (map pow5 (str %))))
-                      (range 2 max) ))))
+                      (range 2 max)))))
 
 (println (solve-fast))

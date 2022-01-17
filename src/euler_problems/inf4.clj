@@ -5,11 +5,7 @@
 
 (defn another-one
   [nums]
-  (
-    ->> (range)
-        (filter (partial multiple-of-any? nums))
-        )
-  )
-
+  (->> (range)
+       (filter (partial multiple-of-any? nums))))
 
 (println (take 10 (another-one [3 5])))

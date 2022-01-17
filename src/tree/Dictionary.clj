@@ -42,13 +42,10 @@
   ([root]
    (height root 0)))
 
-
 (defn operat
   [obj]
-    (cond (instance? Number obj) +
-          :else concat)
-    
-)
+  (cond (instance? Number obj) +
+        :else concat))
 
 (defn insert-node
   "inserts a node into a BST"
@@ -59,7 +56,7 @@
       (assoc root :right (insert-node (:right root) new-node))
       ;; (println root)
       (if (equals new-node root)
-        (assoc root :value ((operat (:value new-node)) 
+        (assoc root :value ((operat (:value new-node))
                             (:value new-node) (:value root)))
         (assoc root :left (insert-node (:left root) new-node))))))
 
@@ -79,7 +76,6 @@
   (if (nil? (:left root))
     root
     (find-smallest-node (:left root))))
-
 
 (defn find-node-parent
   "find parent-node in BST"
@@ -111,7 +107,6 @@
       (assoc (:parent e) :right (add-left-node (:left (:child e)) (:right (:child e))))
       (assoc (:parent e) :left (add-left-node (:left (:child e)) (:right (:child e)))))))
 
-
 (defn remove-node
   ([root key]
    (remove-node-from-tree
@@ -126,11 +121,9 @@
      dict
      (if (map-entry? dict)
        (insert-node {:key (key dict) :value (val dict) :left nil :right nil} {:key (key entry) :value (val entry) :left nil :right nil})
-       (insert-node dict {:key (key entry) :value (val entry) :left nil :right nil})
-       )))
+       (insert-node dict {:key (key entry) :value (val entry) :left nil :right nil}))))
   ([entry]
    (entry-node nil entry)))
-
 
 (defn add-to-dict
   ([dict init & inits_var]
@@ -144,7 +137,6 @@
 (defn value-from-dict
   [dict key]
   (:value (find-node dict key)))
-
 
 (defn create-dict
   ([& args]
@@ -177,8 +169,9 @@
 
 (defn dmerge
   ([dict1 dict2]
-   (reduce entry-node-reducer nil (merge-with + (map first (concat (dvalues dict1) (dvalues dict2)))))
-   ))
+   (reduce entry-node-reducer nil (merge-with + (map first (concat (dvalues dict1) (dvalues
+
+                                                                                    dict2)))))))
 
 
 

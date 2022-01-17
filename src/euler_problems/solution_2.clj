@@ -9,8 +9,8 @@
      (if (zero? n)
        res
        (recur
-         (quot n radix)
-         (cons (rem n radix) res))))))
+        (quot n radix)
+        (cons (rem n radix) res))))))
 
 (defn iexpt [x ^long exp]
   "Raise x to an integer exponent, of the form x^exp"

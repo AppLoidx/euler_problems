@@ -13,4 +13,6 @@ pom.xml.asc
 
 .clj-kondo
 .lsp
+.idea
+euler_problems.iml
 

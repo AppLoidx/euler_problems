@@ -3,7 +3,6 @@
             [clojure.test :refer [is deftest]]
             [tree.Dictionary :refer :all]))
 
-
 (require '[clojure.test.check :as tc]
          '[clojure.test.check.properties :as prop])
 
@@ -22,7 +21,6 @@
 
 (deftest height_test
   (is (= (:result (tc/quick-check 100 height_pbt)) true)))
-
 
 (def find-node-nil_pbt
   (prop/for-all [v (gen/vector gen/small-integer)]

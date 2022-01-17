@@ -2,8 +2,7 @@
 
 (defn take-nums
   [x]
-  (take x (filter #(zero? (min (mod % 3) (mod % 5))) (range)))
-  )
+  (take x (filter #(zero? (min (mod % 3) (mod % 5))) (range))))
 
 (defn multiple-of-any? [coll n]
   "Returns whether n is multiple of any number in coll."
@@ -11,12 +10,9 @@
 
 (defn another-one
   [x]
-  (
-    ->> (range)
-        (filter (partial multiple-of-any? [3 5]))
-        (take x)
-        (reduce +))
-  )
-
+  (->> (range)
+       (filter (partial multiple-of-any? [3 5]))
+       (take x)
+       (reduce +)))
 
 (println (another-one 10))
