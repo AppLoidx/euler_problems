@@ -5,6 +5,8 @@
             [clojure.string :as str]))
 
 
+
+
 (defn binary-search
   "  Finds index of rightmost value in sorted vector that is less or equal to given value."
   [vec value]
@@ -15,7 +17,9 @@
       (let [middle (quot (+ left right) 2)]
         (if (<= (nth vec middle) value)
           (recur middle right)
-          (recur left middle))))))
+          (recur left middle))))
+
+))
 
 
 (defn find-segment
@@ -105,16 +109,13 @@
     (validate-unique (map first points))
     (method points)))
 
-;; (prn ((interpolate [[1, 1], [2, 2], [3, 4]] :polynomial) 10))
-
-(defn apply-to-file-data
-  [f]
-  (with-open [rdr (io/reader *in*)]
-    (reduce f [] (line-seq rdr))))
+  
 
 (defn parse-csv
   [line]
-  (mapv read-string (str/split line #",")))
+  (map read-string (str/split line #","))
+  
+  )
 
 (defn parse-keyword
   []
@@ -127,21 +128,54 @@
 
 (defn combiner
   ([list line]
-   (let [points (merge list (parse-csv line))
+   (println line)
+   (let [points (merge (:points list) (parse-csv line))
          aprox-type (parse-keyword)
          discretization (parse-discretization)
          aprox-func (interpolate aprox-type points)
-         range-min (apply min (mapv first points))
-         range-max (apply max (mapv first points))
-         ]
+         range-min (apply min (map first points))
+         range-max (apply max (map first points))]
+         
 
      (prn (mapv aprox-func (range range-min range-max discretization)))
 
-     points)))
+     {:points points :interp (mapv aprox-func (range range-min range-max discretization))})))
+
+(defn interp 
+  [data]
+  (:interp (reduce combiner {:points `() :interp `()} data))
+  )
+
+(defn lazy-read [rdr]
+ (lazy-seq (if-let [line (.readLine rdr)]
+             (cons line (lazy-read rdr))
+             (do (.close rdr) nil))))
+
+
+(defn lazy-file-lines [file]
+    (lazy-read (clojure.java.io/reader file)))
 
 
 (defn main []
-     (prn (apply-to-file-data combiner))
-  )
+    ;;  (prn (apply-to-file-data combiner))
 
-(main)
+      ;;  (-> (read-seq)
+      ;;      (reduce combiner [])
+      ;;      (println))
+  (println (lazy-file-lines *in*))
+  ;; (println
+  ;;  (interp (lazy-file-lines *in*)))
+  )
+    
+  
+
+;; (main)
+
+(println (macroexpand-1
+          '(with-open [reader (io/reader *in*)]
+             (line-seq reader))))
+
+(clojure.core/let [reader (io/reader *in*)] 
+          (try (clojure.core/with-open [] 
+              (line-seq reader)) 
+          (finally (. reader clojure.core/close))))

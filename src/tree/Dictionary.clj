@@ -86,11 +86,6 @@
   ([root key parent]
    (if (nil? (:key root))
      nil
-    ;;  (if (= (key-wrapper key) (nodekey-wrapper root))
-    ;;    {:parent parent :child root}
-    ;;    (if (> (key-wrapper key) (nodekey-wrapper root))
-    ;;      (find-node-parent (:right root) key root)
-    ;;      (find-node-parent (:left root) key root)))
      (let [target (key-wrapper key) node (nodekey-wrapper root)]
        (cond
          (= target node) {:parent parent :child root}
@@ -124,26 +119,14 @@
   ([root key & keys]
    (reduce remove-node (remove-node root key) keys)))
 
-
-;; (defn add-to-dict-v1
-;;   ([dict entry]
-;;    (if (nil? entry)
-;;      dict
-;;      (insert-node dict (make-node (:key entry) (:value entry)))))
-
-  ;; ([entry]
-  ;;  (insert-node nil (make-node (:key entry) (:value entry)))))
-
 (defn entry-node
   ([dict entry]
 
    (if (nil? entry)
      dict
      (if (map-entry? dict)
-      ;;  (prn dict)
        (insert-node {:key (key dict) :value (val dict) :left nil :right nil} {:key (key entry) :value (val entry) :left nil :right nil})
        (insert-node dict {:key (key entry) :value (val entry) :left nil :right nil})
-      ;;  (prn dict)
        )))
   ([entry]
    (entry-node nil entry)))
@@ -184,56 +167,25 @@
   ([f root]
    (filter f (dvalues root))))
 
-(defn demon-val?
-  ([entry]
-   (= 666 (val (first entry)))))
-
 (defn dmap
   ([f root]
-   (map f (dvalues root))))
+   (reduce add-to-dict nil (map f (dvalues root)))))
 
-(defn ttt
+(defn entry-node-reducer
   [acc entry]
   (entry-node acc entry))
 
-;; (defn merger
-;;   [me1 me2]
-;;   (if (nil? (find me1 (key me2)))
-;;     (+ me1 me2)
-;;     (+ me1 (assoc :value me2  3))
-;;     ))
-
 (defn dmerge
   ([dict1 dict2]
-   (reduce ttt nil (merge-with + (map first (concat (dvalues dict1) (dvalues dict2)))))
+   (reduce entry-node-reducer nil (merge-with + (map first (concat (dvalues dict1) (dvalues dict2)))))
    ))
 
-(defn main
-  []
-  ;; (println
-  ;; ;;  (add-to-dict (create-dict {:goodnum 666 :another 100}) {:my 111 :not-my 1500}))
-  ;; (println
-  ;;  (add-to-dict (create-dict {:badnum 666 :coolnum 100}) {:notmyval 111 :sheeez 1500}))
-  ;; (println (create-dict {:key1 666 :key2 100}))
-
-  ;; (prn (create-dict {:key1 666, :key2 100}))
-  ;; (prn (create-dict {:key1 666, :key2 100} {:key4 12 :key5 13}))
-
-  ;; (println
-
-  ;; (prn (dfilter demon-val?
-  ;;               (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
-
-  ;; (prn (dmap #(+ 10 (val (first %)))
-  ;;            (add-to-dict (create-dict {:key1 666 :key2 100}) {:key3 111} {:key6 666})))
-
-  (prn (dmerge (create-dict {:k1 {:shit 1 :shit2 2} :k2 3333}) (create-dict {:k2 3 :k1 {:v 3 :b 6}}))))
 
 
 
 
 
-(main)
+;; (main)
 
 
 
